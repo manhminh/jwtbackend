@@ -34,7 +34,6 @@
                     <div class="col-12 mb-3">
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
-
                 </form>
             </div>
             <div class="table-user mt-3">
@@ -62,7 +61,9 @@
                                 </td>
                                 <td>
                                     <button class="btn btn-warning">Edit</button>
-                                    <button class="btn  btn-danger">Delete</button>
+                                    <form style='display:inline;' method="POST" action="/delete-user/<%= item.id %>">
+                                        <button type="submit" class="btn  btn-danger">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                             <% }); %>
