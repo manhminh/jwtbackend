@@ -1,32 +1,17 @@
-import mysql from 'mysql2';
+import mysql from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
-
-// create the connection to database
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'jwt'
-});
+import bluebird from 'bluebird';
 
 // init salt
 const salt = bcrypt.genSaltSync(10);
 
-/**
- * bump password to encode password
- * @param {*} password 
- * @returns 
- */
+
 const hashUserPassword = (password) => {
     let hashPassword = bcrypt.hashSync(password, salt);
     return hashPassword;
 }
 
-/**
- * connect to DB and handle create a user
- * @param {*} email 
- * @param {*} password 
- * @param {*} username 
- */
+
 const createNewUser = (email, password, username) => {
     let hashPassword = hashUserPassword(password);
     // let checkUserPassword = bcrypt.compareSync(password, hashPassword);
@@ -41,19 +26,33 @@ const createNewUser = (email, password, username) => {
     );
 }
 
-/**
- * read infor all users
- */
-const getUserList = () => {
-    connection.query(
-        'Select * from  users',
-        function (err, results, fields) {
-            if (err) {
-                console.log(err);
-            }
-            console.log('check result', results);
-        }
-    );
+const getUserList = async () => {
+    // create the connection, specify bluebird as Promise
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        database: 'jwt',
+        Promise: bluebird
+    });
+    // let users = [];
+    // return connection.query(
+    //     'Select * from  users',
+    //     function (err, results, fields) {
+    //         if (err) {
+    //             console.log(err);
+    //             return users;
+    //         }
+    //         users = results;
+    //         return users
+    //     }
+    // );
+    try {
+        const [rows, fields] = await connection.execute('Select * from  users');
+        return rows;
+    } catch (error) {
+        console.log('check error', error);
+    }
+
 }
 
 module.exports = {

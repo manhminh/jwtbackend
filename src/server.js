@@ -19,5 +19,5 @@ initWebRoutes(app);
 
 
 app.listen(PORT, () => {
-    console.log(">>>Jwt Backend is running in the port = " + PORT);
+    console.log(">>> Jwt Backend is running in the port = " + PORT);
 })
