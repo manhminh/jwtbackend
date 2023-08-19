@@ -20,75 +20,42 @@ const createNewUser = async (email, password, username) => {
             username: username
         })
     } catch (error) {
-        console.log('check error', error);
+        console.log('>>> check error: ', error);
     }
 }
 
 const getUserList = async () => {
-    // create the connection, specify bluebird as Promise
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'jwt',
-        Promise: bluebird
+    let users = [];
+    users = await db.User.findAll({
+        raw: true,
     });
-
-    try {
-        const [rows, fields] = await connection.execute('Select * from  user');
-        return rows;
-    } catch (error) {
-        console.log('check error', error);
-    }
+    return users;
 }
 
-const deleteUser = async (id) => {
-    // create the connection, specify bluebird as Promise
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'jwt',
-        Promise: bluebird
+const deleteUser = async (userId) => {
+    await db.User.destroy({
+        where: {
+            id: userId
+        }
     });
-    try {
-        const [rows, fields] = await connection.execute('DELETE FROM user WHERE id=?', [id]);
-        return rows;
-    } catch (error) {
-        console.log('check error', error);
-    }
 }
 
 const getUserById = async (id) => {
-    // create the connection, specify bluebird as Promise
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'jwt',
-        Promise: bluebird
-    });
-    try {
-        const [rows, fields] = await connection.execute('Select * from user WHERE id=?', [id]);
-        return rows;
-    } catch (error) {
-        console.log('check error', error);
-    }
+    const user = await db.User.findOne(
+        {
+            where: { id: id }
+        },
+    );
+    return user.get({ plain: true });
 }
 
 const updateUser = async (email, username, id) => {
-    // create the connection, specify bluebird as Promise
-
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'jwt',
-        Promise: bluebird
-    });
-    try {
-        const [rows, fields] = await connection.execute('UPDATE user SET email = ?, username= ? WHERE id = ?', [email, username, id]);
-        console.log(rows);
-        return rows;
-    } catch (error) {
-        console.log('check error', error);
-    }
+    await db.User.update({ email: email, username: username },
+        {
+            where: {
+                id: id
+            }
+        });
 }
 
 module.exports = {
