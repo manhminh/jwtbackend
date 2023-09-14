@@ -19,13 +19,13 @@ const handleCreateNewUser = async (req, res) => {
     let username = req.body.username;
 
     await userService.createNewUser(email, password, username);
-    return res.redirect("/user");
+    return res.redirect("/users");
 }
 
 const handleDeleteUser = async (req, res) => {
     await userService.deleteUser(req.params.id);
 
-    return res.redirect("/user");
+    return res.redirect("/users");
 }
 
 const getUpdateUserPage = async (req, res) => {
@@ -42,7 +42,7 @@ const handleUpdateUser = async (req, res) => {
     let id = req.body.id;
 
     await userService.updateUser(email, username, id);
-    return res.redirect("/user");
+    return res.redirect("/users");
 }
 
 module.exports = {
